@@ -1,7 +1,7 @@
 [ignore]
 ; This flowconfig is forked by platform - the only difference between them is which suffix is ignored.
-.*/*[.]android.js
-;.*/*[.]ios.js
+;.*/*[.]android.js
+.*/*[.]ios.js
 
 ; Ignore templates for 'react-native init'
 .*/local-cli/templates/.*

@@ -18,10 +18,7 @@ _This project is maintained for free by these people using both their free time 
 
 ## Platforms Supported
 
-- [x] iOS
 - [x] Android
-- [x] macOS
-- [x] Windows
 
 _Note: Expo support for React Native WebView started with [Expo SDK v33.0.0](https://blog.expo.io/expo-sdk-v33-0-0-is-now-available-52d1c99dfe4c)._
 
