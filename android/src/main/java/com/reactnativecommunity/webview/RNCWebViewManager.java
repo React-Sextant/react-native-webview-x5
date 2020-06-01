@@ -13,6 +13,7 @@ import android.Manifest;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.util.Log;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
@@ -21,22 +22,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
-import android.webkit.ConsoleMessage;
-import android.webkit.CookieManager;
-import android.webkit.DownloadListener;
-import android.webkit.GeolocationPermissions;
+import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
+import com.tencent.smtt.sdk.CookieManager;
+import com.tencent.smtt.sdk.DownloadListener;
+import com.tencent.smtt.export.external.interfaces.GeolocationPermissionsCallback;
 import android.webkit.JavascriptInterface;
-import android.webkit.PermissionRequest;
+import com.tencent.smtt.export.external.interfaces.PermissionRequest;
 import android.webkit.URLUtil;
-import android.webkit.ValueCallback;
-import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import com.tencent.smtt.sdk.ValueCallback;
+import com.tencent.smtt.sdk.WebChromeClient;
+import com.tencent.smtt.export.external.interfaces.IX5WebChromeClient.CustomViewCallback;
+import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
+import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
+import com.tencent.smtt.sdk.WebSettings;
+import com.tencent.smtt.sdk.WebView;
+import com.tencent.smtt.sdk.WebViewClient;
 import android.widget.FrameLayout;
 
+import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.views.scroll.ScrollEvent;
 import com.facebook.react.views.scroll.ScrollEventType;
 import com.facebook.react.views.scroll.OnScrollDispatchHelper;
@@ -67,6 +70,8 @@ import com.reactnativecommunity.webview.events.TopLoadingProgressEvent;
 import com.reactnativecommunity.webview.events.TopLoadingStartEvent;
 import com.reactnativecommunity.webview.events.TopMessageEvent;
 import com.reactnativecommunity.webview.events.TopShouldStartLoadWithRequestEvent;
+import com.tencent.smtt.sdk.QbSdk;
+import com.tencent.smtt.sdk.TbsListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -139,7 +144,35 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
   protected @Nullable String mUserAgent = null;
   protected @Nullable String mUserAgentWithApplicationName = null;
 
-  public RNCWebViewManager() {
+  public RNCWebViewManager(ReactApplicationContext reactContext) {
+    QbSdk.setTbsListener(new TbsListener() {
+      @Override
+      public void onDownloadFinish(int i) {
+        Log.d("react-native-webview-x5", "onDownloadFinish");
+      }
+      @Override
+      public void onInstallFinish(int i) {
+        Log.d("react-native-webview-x5", "onInstallFinish");
+      }
+      @Override
+      public void onDownloadProgress(int i) {
+        Log.d("react-native-webview-x5", "onDownloadProgress:" + i);
+      }
+    });
+
+    QbSdk.setDownloadWithoutWifi(true);
+    QbSdk.setNeedInitX5FirstTime(true);
+    QbSdk.initX5Environment(reactContext, new QbSdk.PreInitCallback() {
+      @Override
+      public void onViewInitFinished(boolean success) {
+        Log.d("react-native-webview-x5", "onViewInitFinished is " + success);
+      }
+      @Override
+      public void onCoreInitFinished() {
+        Log.d("react-native-webview-x5", "onCoreInitFinished");
+      }
+    });
+
     mWebViewConfig = new WebViewConfig() {
       public void configWebView(WebView webView) {
       }
@@ -405,7 +438,7 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
   public void setMessagingModuleName(WebView view, String moduleName) {
     ((RNCWebView) view).setMessagingModuleName(moduleName);
   }
-   
+
   @ReactProp(name = "incognito")
   public void setIncognito(WebView view, boolean enabled) {
     // Remove all previous cookies
@@ -488,15 +521,19 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
     ((RNCWebView) view).setSendContentSizeChangeEvents(sendContentSizeChangeEvents);
   }
 
+  private static final int MIXED_CONTENT_ALWAYS_ALLOW = 0;
+  private static final int MIXED_CONTENT_NEVER_ALLOW = 1;
+  private static final int MIXED_CONTENT_COMPATIBILITY_MODE = 2;
+
   @ReactProp(name = "mixedContentMode")
   public void setMixedContentMode(WebView view, @Nullable String mixedContentMode) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       if (mixedContentMode == null || "never".equals(mixedContentMode)) {
-        view.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+        view.getSettings().setMixedContentMode(MIXED_CONTENT_NEVER_ALLOW);
       } else if ("always".equals(mixedContentMode)) {
-        view.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        view.getSettings().setMixedContentMode(MIXED_CONTENT_ALWAYS_ALLOW);
       } else if ("compatibility".equals(mixedContentMode)) {
-        view.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
+        view.getSettings().setMixedContentMode(MIXED_CONTENT_COMPATIBILITY_MODE);
       }
     }
   }
@@ -655,7 +692,7 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
         public Bitmap getDefaultVideoPoster() {
           return Bitmap.createBitmap(50, 50, Bitmap.Config.ARGB_8888);
         }
-        
+
         @Override
         public void onShowCustomView(View view, CustomViewCallback callback) {
           if (mVideoView != null) {
@@ -767,7 +804,7 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
 
 
     @TargetApi(Build.VERSION_CODES.N)
-    @Override
+    //@Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
       final String url = request.getUrl().toString();
       return this.shouldOverrideUrlLoading(view, url);
@@ -872,7 +909,7 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
     protected View mWebView;
 
     protected View mVideoView;
-    protected WebChromeClient.CustomViewCallback mCustomViewCallback;
+    protected CustomViewCallback mCustomViewCallback;
 
     public RNCWebChromeClient(ReactContext reactContext, WebView webView) {
       this.mReactContext = reactContext;
@@ -950,7 +987,7 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
     }
 
     @Override
-    public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+    public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissionsCallback callback) {
       callback.invoke(origin, true, false);
     }
 
@@ -962,7 +999,8 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
       getModule(mReactContext).startPhotoPickerIntent(filePathCallback, "");
     }
 
-    protected void openFileChooser(ValueCallback<Uri> filePathCallback, String acceptType, String capture) {
+    @Override
+    public void openFileChooser(ValueCallback<Uri> filePathCallback, String acceptType, String capture) {
       getModule(mReactContext).startPhotoPickerIntent(filePathCallback, acceptType);
     }
 

@@ -1,14 +1,13 @@
 import React, {Component} from 'react';
-import {View, Text, Alert, TextInput, Button} from 'react-native';
+import {View} from 'react-native';
 import WebView from '@falconia/react-native-webview-x5';
-const localHtmlFile = require('../assets/test.html');
 
-export default class LocalPageLoad extends Component<Props, State> {
+export default class X5 extends Component {
     render() {
       return (
         <View>
             <View style={{ width: '100%', height: '100%' }}>
-                <WebView source={localHtmlFile}/>
+                <WebView source={{ uri: 'http://debugtbs.qq.com/' }} />
           </View>
         </View>
       );

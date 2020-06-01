@@ -10,6 +10,7 @@ import {
   Platform,
 } from 'react-native';
 
+import X5 from './examples/X5';
 import Alerts from './examples/Alerts';
 import Scrolling from './examples/Scrolling';
 import Background from './examples/Background';
@@ -19,6 +20,14 @@ import Injection from './examples/Injection';
 import LocalPageLoad from './examples/LocalPageLoad';
 
 const TESTS = {
+  X5: {
+    title: 'X5',
+    testId: 'X5',
+    description: 'X5 load test',
+    render() {
+      return <X5 />;
+    },
+  },
   Alerts: {
     title: 'Alerts',
     testId: 'alerts',
@@ -83,7 +92,7 @@ type State = {restarting: boolean, currentTest: Object};
 export default class App extends Component<Props, State> {
   state = {
     restarting: false,
-    currentTest: TESTS.Alerts,
+    currentTest: TESTS.X5,
   };
 
   _simulateRestart = () => {
@@ -113,6 +122,11 @@ export default class App extends Component<Props, State> {
         </TouchableOpacity>
 
         <View style={styles.testPickerContainer}>
+          <Button
+              testID="testType_x5"
+              title="X5"
+              onPress={() => this._changeTest('X5')}
+          />
           <Button
             testID="testType_alerts"
             title="Alerts"

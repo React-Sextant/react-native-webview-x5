@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Button, Linking, Text, View} from 'react-native';
 
-import WebView from 'react-native-webview';
+import WebView from '@falconia/react-native-webview-x5';
 
 const HTML = `
 <!DOCTYPE html>\n

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Text, View, ScrollView} from 'react-native';
 
-import WebView from 'react-native-webview';
+import WebView from '@falconia/react-native-webview-x5';
 
 // const HTML = `
 // <!DOCTYPE html>
@@ -45,7 +45,7 @@ export default class Injection extends Component<Props, State> {
               source={{ uri: "https://birchlabs.co.uk/linguabrowse/infopages/obsol/rnw_iframe_test.html" }}
               automaticallyAdjustContentInsets={false}
               style={{backgroundColor:'#00000000'}}
-              
+
               /* Must be populated in order for `messagingEnabled` to be `true` to activate the
                * JS injection user scripts, consistent with current behaviour. This is undesirable,
                * so needs addressing in a follow-up PR. */
@@ -84,7 +84,7 @@ export default class Injection extends Component<Props, State> {
                 console.log("wasn't window.top. Still going...");
               }
               `}
-              
+
               injectedJavaScriptForMainFrameOnly={false}
 
               /* We read the colourToUse property in each frame to recolour each frame */

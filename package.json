@@ -1,15 +1,16 @@
 {
-  "name": "react-native-webview",
+  "name": "@falconia/react-native-webview-x5",
   "description": "React Native WebView component by x5 kernel for Android",
   "main": "index.js",
   "typings": "index.d.ts",
   "author": "Jamon Holmgren <jamon@infinite.red>",
   "contributors": [
-    "Thibault Malbranche <malbranche.thibault@gmail.com>"
+    "Thibault Malbranche <malbranche.thibault@gmail.com>",
+    "Pengxuan Men <mpengxuan.men@gmail.com>"
   ],
   "license": "MIT",
-  "version": "10.1.0",
-  "homepage": "https://github.com/react-native-community/react-native-webview#readme",
+  "version": "10.1.0-alpha.43903.0",
+  "homepage": "https://github.com/FalconIA/react-native-webview-x5",
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "start:android": "react-native run-android",
@@ -65,7 +66,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/react-native-community/react-native-webview.git"
+    "url": "https://github.com/FalconIA/react-native-webview-x5.git"
   },
   "files": [
     "android",

@@ -27,7 +27,7 @@ It's possible to debug WebView contents in the Android emulator or on a device u
 
 1. You will need to make the following change to `MainApplication.java` to enabled web contents debugging:
 ```java
-  import android.webkit.WebView;
+  import com.tencent.smtt.sdk.WebView;
 
   @Override
   public void onCreate() {

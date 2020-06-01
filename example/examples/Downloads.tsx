@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Alert, Platform, View} from 'react-native';
 
-import WebView, {FileDownload} from 'react-native-webview';
+import WebView, {FileDownload} from '@falconia/react-native-webview-x5';
 
 const HTML = `
 <!DOCTYPE html>\n
